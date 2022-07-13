@@ -19,7 +19,7 @@ from   cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 from cartopy.util import add_cyclic_point
 
 
-fileIn = "/Users/massonnetf/prod_1985_ERA5_1d_20091201_20091231_grid_T_0.25x0.25.nc"
+fileIn = "/cofast/fmasson/TMP/prod_1985_ERA5_1d_20090101_20091231_grid_T_0.25x0.25.nc"
 
 varList = ["tos", "lat", "lon"]
 
@@ -81,7 +81,7 @@ for jt in range(time_counter):
     fig, _ = plt.subplots(figsize=(6, 6), dpi=300)
     plt.axis('off')
     
-    myProj =  ccrs.NearsidePerspective(central_longitude= 0.0 + jt, \
+    myProj =  ccrs.NearsidePerspective(central_longitude= 0.0 + jt / 10, \
                                       central_latitude=-73.0, \
                                       satellite_height=3000000, \
                                       false_easting=0, false_northing=0)
@@ -110,7 +110,7 @@ for jt in range(time_counter):
     #                   vmin = -2, vmax = 4)
     
     ax.pcolormesh(lon, lat, data,  transform=ccrs.PlateCarree(),  \
-                      vmin = -2.0, vmax = 10.0, cmap = plt.cm.RdYlBu_r )
+                      vmin = -2.0, vmax = 10.0, cmap = plt.cm.RdYlBu_r,)
                        
     
     # Doing the gridlines we want 
