@@ -38,7 +38,7 @@ for var in f.variables:
 f.close()
 
 # Read ice data
-fileIn = "/Users/massonnetf/prod_1985_ERA5_1d_20091201_20091231_icemod_0.25x0.25.nc"
+fileIn = "/cofast/fmasson/TMP/prod_1985_ERA5_1d_20090101_20091231_icemod_0.25x0.25.nc"
 
 varList = ["siconc", "lat", "lon"]
 
@@ -79,16 +79,24 @@ for jt in range(time_counter):
     
     data = np.squeeze(tos[jt,:,:])
     
-    
-    ax.pcolormesh(lon, lat, data,  transform=ccrs.PlateCarree(),  \
-                      vmin = -2.0, vmax = 10.0, cmap = plt.cm.RdYlBu_r )
-                   
-    data = np.squeeze(siconc[jt, :, :])
-    ax.pcolormesh(lon, lat, data, \
-                   transform=ccrs.PlateCarree(), cmap = plt.cm.Blues_r,
-                   vmin = 0.2, vmax = 1.0
-                   )
-   
+    # SST
+    levels = np.arange(-2.0, 25.0, step = 1)
+    levels = np.array([-2.0 + 0.1 * j for j in range(40)] + [2.0 + 1.0 * j for j in range(25)])
+    ax.contourf(lon, lat, data,
+                transform=ccrs.PlateCarree(),cmap = plt.cm.RdYlBu_r, levels = levels)                   
+
+
+    # Ice
+    data = np.squeeze(siconc[jt, :, :]) 
+
+    # Tweak: the colorbar is linearly going from white to blue but we want
+    # it to be non-linear. So we plot the sqrt of siconc instead of siconc
+    # itself. Thereby, low values (ex 0.04) are mapped to higher values
+    # which are more white.
+    data = data ** (1 / 3)
+    levels = np.arange(-0.1,1, 0.01)
+    ax.contourf(lon, lat, data,
+                transform=ccrs.PlateCarree(),cmap = plt.cm.Blues_r, levels = levels)
     # Add Title
     
     plt.savefig("./figs/fig" + str(jt).zfill(5) + ".png")
