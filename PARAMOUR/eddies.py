@@ -19,7 +19,8 @@ from   cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 from cartopy.util import add_cyclic_point
 
 # Read ocean data
-fileIn = "/cofast/fmasson/TMP/prod_1985_ERA5_1d_20090101_20091231_grid_T_0.25x0.25.nc"
+#fileIn = "/cofast/fmasson/TMP/prod_1985_ERA5_1d_20090101_20091231_grid_T_0.25x0.25.nc"
+fileIn = "/Users/massonnetf/prod_1985_ERA5_1d_20091201_20091231_grid_T_0.25x0.25.nc"
 
 varList = ["tos", "lat", "lon"]
 
@@ -38,7 +39,8 @@ for var in f.variables:
 f.close()
 
 # Read ice data
-fileIn = "/cofast/fmasson/TMP/prod_1985_ERA5_1d_20090101_20091231_icemod_0.25x0.25.nc"
+#fileIn = "/cofast/fmasson/TMP/prod_1985_ERA5_1d_20090101_20091231_icemod_0.25x0.25.nc"
+fileIn = "/Users/massonnetf/prod_1985_ERA5_1d_20091201_20091231_icemod_0.25x0.25.nc"
 
 varList = ["siconc", "lat", "lon"]
 
@@ -80,10 +82,11 @@ for jt in range(time_counter):
     data = np.squeeze(tos[jt,:,:])
     
     # SST
-    levels = np.arange(-2.0, 25.0, step = 1)
-    levels = np.array([-2.0 + 0.1 * j for j in range(40)] + [2.0 + 1.0 * j for j in range(25)])
+    levels = np.arange(-2.0, 10.0, step = 1)
+    #levels = np.array([-2.0 + 0.1 * j for j in range(20)] + [2.0 + 1.0 * j for j in range(15)])
     ax.contourf(lon, lat, data,
-                transform=ccrs.PlateCarree(),cmap = plt.cm.RdYlBu_r, levels = levels)                   
+                transform=ccrs.PlateCarree(),cmap = plt.cm.inferno, \
+                    levels = levels, extend = "both")                   
 
 
     # Ice
@@ -94,13 +97,17 @@ for jt in range(time_counter):
     # itself. Thereby, low values (ex 0.04) are mapped to higher values
     # which are more white.
     data = data ** (1 / 3)
-    levels = np.arange(-0.1,1, 0.01)
+    levels = np.arange(0.0, 1, 0.1)
     ax.contourf(lon, lat, data,
-                transform=ccrs.PlateCarree(),cmap = plt.cm.Blues_r, levels = levels)
+                transform=ccrs.PlateCarree(),cmap = plt.cm.Blues_r, \
+                    levels = levels, extend = "both")
     # Add Title
-    
+    #cs.cmap.set_under(col_under)
+    #cs.cmap.set_over(col_over)
     plt.savefig("./figs/fig" + str(jt).zfill(5) + ".png")
     
-
+  
+    
     plt.close(fig)
+    stop()
 
