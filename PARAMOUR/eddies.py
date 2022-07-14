@@ -18,11 +18,14 @@ import cartopy.feature as cfeature
 from   cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 from cartopy.util import add_cyclic_point
 
-# Read ocean data
-fileIn = "/cofast/fmasson/TMP/prod_1985_ERA5_1d_20090101_20091231_grid_T_0.25x0.25.nc"
+import matplotlib
+
+# Read data
+fileIn = "/cofast/fmasson/TMP/PARAMOUR.nc"
+#fileIn = "/cofast/fmasson/TMP/prod_1985_ERA5_1d_20090101_20091231_grid_T_0.25x0.25.nc"
 #fileIn = "/Users/massonnetf/prod_1985_ERA5_1d_20091201_20091231_grid_T_0.25x0.25.nc"
 
-varList = ["tos", "lat", "lon"]
+varList = ["tos", "siconc", "lat", "lon"]
 
 f = Dataset(fileIn, mode = "r")
 
@@ -37,26 +40,6 @@ for var in f.variables:
     exec(f"{var} = f.variables[var][:].data")
 
 f.close()
-
-# Read ice data
-fileIn = "/cofast/fmasson/TMP/prod_1985_ERA5_1d_20090101_20091231_icemod_0.25x0.25.nc"
-#fileIn = "/Users/massonnetf/prod_1985_ERA5_1d_20091201_20091231_icemod_0.25x0.25.nc"
-
-varList = ["siconc", "lat", "lon"]
-
-f = Dataset(fileIn, mode = "r")
-
-# Read dimensions
-for dim in f.dimensions:
-  exec(f"{dim} = f.dimensions[dim].size")
-  
-# Read variables
-for var in f.variables:
-  if var in varList:
-    exec(f"{var} = f.variables[var][:].data")
-
-f.close()
-
 
 for jt in range(time_counter):
     print(jt)
@@ -82,12 +65,14 @@ for jt in range(time_counter):
     data = np.squeeze(tos[jt,:,:])
     
     # SST
-    #levels = np.arange(-2.0, 10.0, step = 1)
-    levels = np.array([-2.0 + 0.1 * j for j in range(40)] + [2.0 + 0.5 * j for j in range(20)])
-    ax.contourf(lon, lat, data,
-                transform=ccrs.PlateCarree(),cmap = plt.cm.RdYlBu_r, \
-                    levels = levels, extend = "both")                   
-
+    levels = np.arange(-2.25, 15.25, step = 1.0)
+    #levels = np.array([-2.0 + 0.1 * j for j in range(40)] + [2.0 + 0.5 * j for j in range(20)])
+    #cs1 = ax.contourf(lon, lat, data,
+    #            transform=ccrs.PlateCarree(),cmap = plt.cm.RdYlBu_r, \
+    #                levels = levels, extend = "both")                   
+    ax.pcolormesh(lon, lat, data, transform=ccrs.PlateCarree(), cmap = plt.cm.RdYlBu_r, \
+                     vmin = levels[0], vmax = levels[-1],)
+    #cbar1 = fig.colorbar(cs1)
 
     # Ice
     data = np.squeeze(siconc[jt, :, :]) 
@@ -98,12 +83,10 @@ for jt in range(time_counter):
     # which are more white.
     data = data ** (1 / 3)
     levels = np.arange(0.0, 1, 0.01)
-    ax.contourf(lon, lat, data,
-                transform=ccrs.PlateCarree(),cmap = plt.cm.Greys_r, \
-                    levels = levels, extend = "both")
+    ax.pcolormesh(lon, lat, data, transform=ccrs.PlateCarree(), cmap = plt.cm.Greys_r, \
+                     vmin = levels[0], vmax = levels[-1],)
     # Add Title
-    #cs.cmap.set_under(col_under)
-    #cs.cmap.set_over(col_over)
+    ax.set_title("1/4° reconstruction of the ocean and sea ice states\nwww.climate.be/paramour")
     plt.savefig("./figs/fig" + str(jt).zfill(5) + ".png")
     
   
