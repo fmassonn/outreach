@@ -19,8 +19,8 @@ from   cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 from cartopy.util import add_cyclic_point
 
 # Read ocean data
-#fileIn = "/cofast/fmasson/TMP/prod_1985_ERA5_1d_20090101_20091231_grid_T_0.25x0.25.nc"
-fileIn = "/Users/massonnetf/prod_1985_ERA5_1d_20091201_20091231_grid_T_0.25x0.25.nc"
+fileIn = "/cofast/fmasson/TMP/prod_1985_ERA5_1d_20090101_20091231_grid_T_0.25x0.25.nc"
+#fileIn = "/Users/massonnetf/prod_1985_ERA5_1d_20091201_20091231_grid_T_0.25x0.25.nc"
 
 varList = ["tos", "lat", "lon"]
 
@@ -39,8 +39,8 @@ for var in f.variables:
 f.close()
 
 # Read ice data
-#fileIn = "/cofast/fmasson/TMP/prod_1985_ERA5_1d_20090101_20091231_icemod_0.25x0.25.nc"
-fileIn = "/Users/massonnetf/prod_1985_ERA5_1d_20091201_20091231_icemod_0.25x0.25.nc"
+fileIn = "/cofast/fmasson/TMP/prod_1985_ERA5_1d_20090101_20091231_icemod_0.25x0.25.nc"
+#fileIn = "/Users/massonnetf/prod_1985_ERA5_1d_20091201_20091231_icemod_0.25x0.25.nc"
 
 varList = ["siconc", "lat", "lon"]
 
@@ -82,10 +82,10 @@ for jt in range(time_counter):
     data = np.squeeze(tos[jt,:,:])
     
     # SST
-    levels = np.arange(-2.0, 10.0, step = 1)
-    #levels = np.array([-2.0 + 0.1 * j for j in range(20)] + [2.0 + 1.0 * j for j in range(15)])
+    #levels = np.arange(-2.0, 10.0, step = 1)
+    levels = np.array([-2.0 + 0.1 * j for j in range(40)] + [2.0 + 0.5 * j for j in range(20)])
     ax.contourf(lon, lat, data,
-                transform=ccrs.PlateCarree(),cmap = plt.cm.inferno, \
+                transform=ccrs.PlateCarree(),cmap = plt.cm.RdYlBu_r, \
                     levels = levels, extend = "both")                   
 
 
@@ -97,9 +97,9 @@ for jt in range(time_counter):
     # itself. Thereby, low values (ex 0.04) are mapped to higher values
     # which are more white.
     data = data ** (1 / 3)
-    levels = np.arange(0.0, 1, 0.1)
+    levels = np.arange(0.0, 1, 0.01)
     ax.contourf(lon, lat, data,
-                transform=ccrs.PlateCarree(),cmap = plt.cm.Blues_r, \
+                transform=ccrs.PlateCarree(),cmap = plt.cm.Greys_r, \
                     levels = levels, extend = "both")
     # Add Title
     #cs.cmap.set_under(col_under)
@@ -109,5 +109,5 @@ for jt in range(time_counter):
   
     
     plt.close(fig)
-    stop()
+    #stop()
 
