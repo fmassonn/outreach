@@ -3,7 +3,7 @@ import numpy as np
 
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
-
+from cartopy.util import add_cyclic_point
 from netCDF4 import Dataset
 
 
@@ -36,18 +36,20 @@ for jt in range(len(t)):
 
     data = np.squeeze(s[jt,:,:])
     
+    data, lon_tmp = add_cyclic_point(data, coord = lon)
+
     # SST
     levels = np.arange(25, 60, step = 1.0)
     #levels = np.array([-2.0 + 0.1 * j for j in range(40)] + [2.0 + 0.5 * j for j in range(20)])
     #cs1 = ax.contourf(lon, lat, data,
     #            transform=ccrs.PlateCarree(),cmap = plt.cm.RdYlBu_r, \
     #                levels = levels, extend = "both")
-    ax.pcolormesh(lon, lat, data, transform=ccrs.PlateCarree(), cmap = plt.cm.inferno, \
+    ax.pcolormesh(lon_tmp, lat, data, transform=ccrs.PlateCarree(), cmap = plt.cm.inferno, \
                      vmin = levels[0], vmax = levels[-1],)
     #cbar1 = fig.colorbar(cs1)
     # Add Title
     ax.set_title("test")
-    #ax.coastlines()
+    ax.coastlines(color = "white", resolution = "50m", lw = 1)
     plt.savefig("./figs/fig" + str(jt).zfill(5) + ".png")
 
 
