@@ -21,9 +21,8 @@ from cartopy.util import add_cyclic_point
 import matplotlib
 
 # Read data
-fileIn = "/cofast/fmasson/TMP/PARAMOUR.nc"
-#fileIn = "/cofast/fmasson/TMP/prod_1985_ERA5_1d_20090101_20091231_grid_T_0.25x0.25.nc"
-#fileIn = "/Users/massonnetf/prod_1985_ERA5_1d_20091201_20091231_grid_T_0.25x0.25.nc"
+# Created with prep_eddies.bash
+fileIn = "/cofast/fmasson/TMP/TMP2/PARAMOUR.nc"
 
 varList = ["tos", "siconc", "lat", "lon"]
 
@@ -42,7 +41,7 @@ for var in f.variables:
 f.close()
 
 for jt in range(time_counter):
-    print(jt)
+    print(str(jt).zfill(3) + "/" + str(time_counter).zfill(3))
     fig, _ = plt.subplots(figsize=(6, 6), dpi=300)
     plt.axis('off')
     
