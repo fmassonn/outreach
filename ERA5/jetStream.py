@@ -49,7 +49,7 @@ for jt in range(len(t)):
     #cs1 = ax.contourf(lon, lat, data,
     #            transform=ccrs.PlateCarree(),cmap = plt.cm.RdYlBu_r, \
     #                levels = levels, extend = "both")
-    cs1 = ax.pcolormesh(lon, lat, data, transform=ccrs.PlateCarree(), cmap = plt.cm.inferno, \
+    cs1 = ax.pcolormesh(lon_tmp, lat, data, transform=ccrs.PlateCarree(), cmap = plt.cm.inferno, \
                      vmin = levels[0], vmax = levels[-1],)
     cbar1 = fig.colorbar(cs1, orientation = "horizontal", shrink = 0.7)
     cbar1.set_label("m/s", rotation = 0)
