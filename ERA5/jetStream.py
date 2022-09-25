@@ -12,12 +12,15 @@ refDateNetcdf = datetime.datetime(1900, 1, 1)
 
 
 f = Dataset("download_UVPT.nc", mode = "r")
-s = f.variables["s"][:]
+u = f.variables["u"][:]
+v = f.variables["v"][:]
 T = f.variables["t"][:] - 273.15
 lon=f.variables["longitude"][:]
 lat=f.variables["latitude"][:]
 t  =f.variables["time"][:]
 f.close()
+
+s = np.sqrt(u ** 2 + v ** 2)
 
 
 for jt in range(len(t)):
