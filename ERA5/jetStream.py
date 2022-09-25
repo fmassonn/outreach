@@ -11,8 +11,9 @@ from datetime import timedelta
 refDateNetcdf = datetime.datetime(1900, 1, 1)
 
 
-f = Dataset("download_UVP.nc", mode = "r")
+f = Dataset("download_UVPT.nc", mode = "r")
 s = f.variables["s"][:]
+T = f.variables["t"][:] - 273.15
 lon=f.variables["longitude"][:]
 lat=f.variables["latitude"][:]
 t  =f.variables["time"][:]
@@ -40,19 +41,29 @@ for jt in range(len(t)):
     # Plot Data
 
     data = np.squeeze(s[jt,:,:])
-    
+    data[data < 30.0] = np.nan # Mask out slow points
     data, lon_tmp = add_cyclic_point(data, coord = lon)
+    
 
+    temp = np.squeeze(T[jt,:,:])
+    temp, _       = add_cyclic_point(temp, coord = lon)
     # SST
     levels = np.arange(20, 60, step = 1.0)
     #levels = np.array([-2.0 + 0.1 * j for j in range(40)] + [2.0 + 0.5 * j for j in range(20)])
     #cs1 = ax.contourf(lon, lat, data,
     #            transform=ccrs.PlateCarree(),cmap = plt.cm.RdYlBu_r, \
     #                levels = levels, extend = "both")
+    #cs1 = ax.pcolormesh(lon_tmp, lat, data, transform=ccrs.PlateCarree(), cmap = plt.cm.inferno, \
+    #                 vmin = levels[0], vmax = levels[-1],)
+    #cbar1 = fig.colorbar(cs1, orientation = "horizontal", shrink = 0.7)
+    #cbar1.set_label("m/s", rotation = 0)
+
+    # Temps
+    cs2 = ax.pcolormesh(lon_tmp, lat, temp, transform=ccrs.PlateCarree(), cmap = plt.cm.RdYlBu_r, \
+                     vmin = -60, vmax = -30,)
+
     cs1 = ax.pcolormesh(lon_tmp, lat, data, transform=ccrs.PlateCarree(), cmap = plt.cm.inferno, \
                      vmin = levels[0], vmax = levels[-1],)
-    cbar1 = fig.colorbar(cs1, orientation = "horizontal", shrink = 0.7)
-    cbar1.set_label("m/s", rotation = 0)
     # Add Title
     ax.set_title("Wind speed at 250hPa\n" + thisDate.strftime("%d %b %Y"))
     ax.coastlines(color = "white", resolution = "50m", lw = 1)

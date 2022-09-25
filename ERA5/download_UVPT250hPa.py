@@ -8,7 +8,7 @@ c.retrieve(
         'product_type': 'reanalysis',
         'format': 'grib',
         'variable': [
-            'potential_vorticity', 'u_component_of_wind', 'v_component_of_wind',
+            'potential_vorticity', 'u_component_of_wind', 'v_component_of_wind', 'temperature'
         ],
         'pressure_level': '250',
         'year': '2022',
@@ -31,5 +31,9 @@ c.retrieve(
             '18:00', '19:00', '20:00',
             '21:00', '22:00', '23:00',
         ],
+	'area': [
+                    90, -180.0, 0.0,
+                    180.0,
+                ],
     },
     'download.grib')
