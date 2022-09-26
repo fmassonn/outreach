@@ -8,16 +8,15 @@ c = cdsapi.Client()
 firstYear   = 1959  # in ERA5
 currentYear = date.today().year
 
-
 for year in np.arange(firstYear, currentYear):
-	print("Doing " + str(year))
+	print("Doing " + str(int(year)))
 	c.retrieve(
 	    'reanalysis-era5-single-levels',
 	    {
 		'product_type': 'reanalysis',
 		'format': 'grib',
 		'variable': '2m_temperature',
-		'year': str(currentYear),
+		'year': str(int(year)),
 		'month': [
 		    '01', '02', '03',
 		    '04', '05', '06',
