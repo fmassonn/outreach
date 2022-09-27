@@ -51,4 +51,4 @@ for year in np.arange(firstYear, currentYear):
 		    4.3,
 		],
 	    },
-	    'download_T2M_' + str(year) + '.grib')
+	    './data/download_T2M_' + str(year) + '.grib')
