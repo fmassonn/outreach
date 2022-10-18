@@ -8,9 +8,9 @@ c.retrieve(
         'product_type': 'reanalysis',
         'format': 'grib',
         'variable': [
-            'potential_vorticity', 'u_component_of_wind', 'v_component_of_wind', 'temperature'
+            'temperature'
         ],
-        'pressure_level': '250',
+        'pressure_level': '850',
         'year': '2021',
         'month': ['01', '02'],
         'day': [
@@ -41,4 +41,4 @@ c.retrieve(
                     180.0,
                 ],
     },
-    'download.grib')
+    'download_T850hPa.grib')

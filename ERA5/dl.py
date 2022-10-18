@@ -3,14 +3,18 @@ import cdsapi
 c = cdsapi.Client()
 
 c.retrieve(
-    'reanalysis-era5-pressure-levels',
+    'reanalysis-era5-single-levels',
     {
         'product_type': 'reanalysis',
-        'variable': 'potential_vorticity',
-        'pressure_level': '500',
+        'format': 'netcdf',
+        'variable': '2m_temperature',
         'year': '2022',
-        'month': '01',
-        'day': '01',
+        'month': [
+		'09', 
+        ],
+        'day': [
+            '01', 
+        ],
         'time': [
             '00:00', '01:00', '02:00',
             '03:00', '04:00', '05:00',
@@ -21,6 +25,9 @@ c.retrieve(
             '18:00', '19:00', '20:00',
             '21:00', '22:00', '23:00',
         ],
-        'format': 'grib',
+        'area': [
+            50.8, 4.2, 50.7,
+            4.3,
+        ],
     },
-    'download.grib')
+    'download.nc')
