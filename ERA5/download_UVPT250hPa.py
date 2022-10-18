@@ -11,8 +11,10 @@ c.retrieve(
             'potential_vorticity', 'u_component_of_wind', 'v_component_of_wind', 'temperature'
         ],
         'pressure_level': '250',
-        'year': '2022',
-        'month': '09',
+        'year': '2018',
+        'month': [
+            '01','02','03',
+        ],
         'day': [
             '01', '02', '03',
             '04', '05', '06',
@@ -36,4 +38,4 @@ c.retrieve(
                     180.0,
                 ],
     },
-    'download.grib')
+    './data/download_UVPT250hPa.grib')

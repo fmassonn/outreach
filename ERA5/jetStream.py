@@ -14,16 +14,19 @@ refDateNetcdf = datetime.datetime(1900, 1, 1)
 f = Dataset("download_UVPT.nc", mode = "r")
 u = f.variables["u"][:]
 v = f.variables["v"][:]
-T = f.variables["t"][:] - 273.15
 lon=f.variables["longitude"][:]
 lat=f.variables["latitude"][:]
 t  =f.variables["time"][:]
 f.close()
 
+f = Dataset("download_T850hPa.nc", mode = "r")
+T = f.variables["t"][:] - 273.15
+f.close()
+
 s = np.sqrt(u ** 2 + v ** 2)
 
 
-for jt in range(len(t)):
+for jt in np.arange(0, len(t), 1):
     thisDate = refDateNetcdf + timedelta(days = t[jt] / 24)
     print(thisDate)
     print(jt)
@@ -44,9 +47,16 @@ for jt in range(len(t)):
     # Plot Data
 
     data = np.squeeze(s[jt,:,:])
+    dataU= np.squeeze(u[jt,:,:])
+    dataV= np.squeeze(v[jt,:,:])
+
     data[data < 30.0] = np.nan # Mask out slow points
-    data, lon_tmp = add_cyclic_point(data, coord = lon)
+    dataU[data < 30.0] = np.nan # Mask out slow points
+    dataV[data < 30.0] = np.nan # Mask out slow points
     
+    data, lon_tmp = add_cyclic_point(data, coord = lon)
+    dataU, _      = add_cyclic_point(dataU, coord = lon)
+    dataV, _      = add_cyclic_point(dataV, coord = lon)
 
     temp = np.squeeze(T[jt,:,:])
     temp, _       = add_cyclic_point(temp, coord = lon)
@@ -63,13 +73,26 @@ for jt in range(len(t)):
 
     # Temps
     cs2 = ax.pcolormesh(lon_tmp, lat, temp, transform=ccrs.PlateCarree(), cmap = plt.cm.RdYlBu_r, \
-                     vmin = -60, vmax = -30,)
+                     vmin = -10, vmax = 10,)
 
-    cs1 = ax.pcolormesh(lon_tmp, lat, data, transform=ccrs.PlateCarree(), cmap = plt.cm.inferno, \
-                     vmin = levels[0], vmax = levels[-1],)
+    cs1 = ax.pcolormesh(lon_tmp, lat, data, transform=ccrs.PlateCarree(), cmap = plt.cm.gist_gray_r, \
+                     vmin = levels[0], vmax = levels[-1])
+
+    #LON_TMP, LAT = np.meshgrid(lon_tmp, lat)
+
+    #dX  = dataU
+    #dY  = dataV
+    #norm = np.sqrt(dataU ** 2 + dataV ** 2)
+    #dX /= norm
+    #dY /= norm
+
+    #cs3 = ax.plot((LON_TMP, LON_TMP+dX), (LAT, LAT + dY), transform=ccrs.PlateCarree())
+    #step=4
+    #cs3 = ax.quiver(LON_TMP[::step, ::step], LAT[::step,::step], dX[::step,::step], dY[::step,::step], transform=ccrs.PlateCarree())
+
     # Add Title
-    ax.set_title("Wind speed at 250hPa\n" + thisDate.strftime("%d %b %Y"))
-    ax.coastlines(color = "white", resolution = "50m", lw = 1)
+    ax.set_title("Wind Speed at 250hPa\n" + thisDate.strftime("%d %b %Y"))
+    ax.coastlines(color = "black", resolution = "50m", lw = 1)
     plt.savefig("./figs/fig" + str(jt).zfill(5) + ".png")
 
 

@@ -26,6 +26,12 @@ from cartopy.mpl.patch import geos_to_path
 from cartopy.util import add_cyclic_point
 import itertools
 
+import datetime
+from datetime import timedelta
+
+
+
+
 g = 9.81
 
 # Read data
@@ -39,10 +45,14 @@ f = Dataset(fileIn, mode = "r")
 for var in f.variables:
   if var in varList:
     exec(f"{var} = f.variables[var][:].data")
+    if var == "time":
+        dateRef  = datetime.datetime.strptime(f.variables[var].units.split()[2], "%Y-%m-%d")
 
 f.close()
 
+
 z = z /  g  / 10 # to dam
+
 longitude,latitude = np.meshgrid(longitude, latitude)           
 
 
@@ -64,6 +74,7 @@ lc = LineCollection(segments, color='black')
 
 
 for jt in range(len(time)):
+    thisDate = dateRef + timedelta(hours = float(time[jt]))
     print(str(jt) + "/" + str(len(time)))
     fig = plt.subplots( dpi = 300, figsize = (6, 6),)
     ax  = plt.axes(projection = '3d')
@@ -92,10 +103,10 @@ for jt in range(len(time)):
     ax.set_xlim(np.min(longitude), np.max(longitude))
     ax.set_ylim(np.min(latitude), np.max(latitude))
     ax.set_zlim(0, 1200)
+    ax.set_title(thisDate)
     plt.savefig("./figs/fig" + str(jt).zfill(3) + ".png")
         
       
-    stop()
         
     #plt.close(fig)
 
