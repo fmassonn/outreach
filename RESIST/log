@@ -1,0 +1,4 @@
+nohup: ignoring input
+/pfs/lustrep4/users/massonne/git/outreach/RESIST/eddies.py:35: FutureWarning: The return type of `Dataset.dims` will be changed to return a set of dimension names in future, in order to be more consistent with `DataArray.dims`. To access a mapping from dimension names to lengths, please use `Dataset.sizes`.
+  nt = ds.dims[dimTime]
+X connection to localhost:10.0 broken (explicit kill or server shutdown).
