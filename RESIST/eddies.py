@@ -25,81 +25,84 @@ from   matplotlib.colors import LinearSegmentedColormap
 
 # Read data
 # Created with prep_eddies.bash
-fileIn = "/scratch/project_465000898/massonne/TMP/RESIST_1960.nc"
-dimTime = "time_counter"
 
-varConcStr = "siconc"
-varTosStr  = "tos"
-
-ds = xr.open_dataset(fileIn)
-nt = ds.dims[dimTime]
-
-# Get the time-invariant lat/lon fields
-
-lon = ds.variables["nav_lon"].values
-lat = ds.variables["nav_lat"].values
-
-for jt in range(nt):
-    print(str(jt).zfill(3) + "/" + str(nt).zfill(3))
-    t=ds.variables["time_counter"][jt].values
-    stringTime = np.datetime_as_string(t, unit='D')
-
-    concShow = ds.isel(time_counter = jt).variables[varConcStr].values
-    tosShow = ds.isel(time_counter = jt).variables[varTosStr].values
-
-    fig, _ = plt.subplots(figsize=(6, 6), dpi=300)
-    plt.axis('off')
+for year in range(1998, 2004 + 1):
     
-    offsetMap = (t - np.datetime64("1960-01-01T12:00:00.000000000")).item() / 86400000000000
-
-    myProj =  ccrs.NearsidePerspective(central_longitude= 0.0 + offsetMap / 10, \
-                                      central_latitude=+73.0, \
-                                      satellite_height=3000000, \
-                                      false_easting=0, false_northing=0)
+    fileIn = "/scratch/project_465001240/massonne/TMP/RESIST_" + str(year) + ".nc"
+    dimTime = "time_counter"
+    
+    varConcStr = "siconc"
+    varTosStr  = "tos"
+    
+    ds = xr.open_dataset(fileIn)
+    nt = ds.dims[dimTime]
+    
+    # Get the time-invariant lat/lon fields
+    
+    lon = ds.variables["nav_lon"].values
+    lat = ds.variables["nav_lat"].values
+    
+    for jt in range(nt):
+        print(str(jt).zfill(3) + "/" + str(nt).zfill(3))
+        t=ds.variables["time_counter"][jt].values
+        stringTime = np.datetime_as_string(t, unit='D')
+    
+        concShow = ds.isel(time_counter = jt).variables[varConcStr].values
+        tosShow = ds.isel(time_counter = jt).variables[varTosStr].values
+    
+        fig, _ = plt.subplots(figsize=(6, 6), dpi=300)
+        plt.axis('off')
         
-    ax = plt.axes(projection = myProj)
+        offsetMap = (t - np.datetime64("1960-01-01T12:00:00.000000000")).item() / 86400000000000
     
-    
-    # Continents etc.
-    ax.stock_img()
-
-    # Plot Data
-    
-    tosShow[tosShow == 0.0] = np.nan
-    concShow[concShow < 0.05] = np.nan
+        myProj =  ccrs.NearsidePerspective(central_longitude= 0.0 + offsetMap / 10, \
+                                          central_latitude=+73.0, \
+                                          satellite_height=3000000, \
+                                          false_easting=0, false_northing=0)
+            
+        ax = plt.axes(projection = myProj)
         
-    # SST
-    levels = np.arange(-2.25, 15.25, step = 1.0)
-    #levels = np.array([-2.0 + 0.1 * j for j in range(40)] + [2.0 + 0.5 * j for j in range(20)])
-    #cs1 = ax.contourf(lon, lat, data,
-    #            transform=ccrs.PlateCarree(),cmap = plt.cm.RdYlBu_r, \
-    #                levels = levels, extend = "both")                   
-    ax.pcolormesh(lon, lat, tosShow, transform=ccrs.PlateCarree(), cmap = plt.cm.RdYlBu_r, \
-                     vmin = levels[0], vmax = levels[-1],)
-    #cbar1 = fig.colorbar(cs1)
-
-    # Ice
-
-
-    # Tweak: the colorbar is linearly going from white to blue but we want
-    # it to be non-linear. So we plot the sqrt of siconc instead of siconc
-    # itself. Thereby, low values (ex 0.04) are mapped to higher values
-    # which are more white.
-    #data = data ** (1 / 3)
-    sourceColors = [ [0.0, 0.0, 0.2], [0.95, 0.95, 0.95]]
-    myCM = LinearSegmentedColormap.from_list('myCM', sourceColors, N = 100)
-
-    #levels = np.arange(0.0, 1, 0.01)
-    levels = np.arange(0.0, 1.05, 0.05)
-
-    ax.pcolormesh(lon, lat, concShow, transform=ccrs.PlateCarree(), cmap = myCM, \
-                     vmin = levels[0], vmax = levels[-1],)
-    # Add Title
-    ax.set_title("1/12° reconstruction of the ocean and sea ice states\nwww.resist-project.github.io\n" + stringTime)
-    plt.savefig("./figs/" + stringTime + ".png")
+        
+        # Continents etc.
+        ax.stock_img()
     
-  
+        # Plot Data
+        
+        tosShow[tosShow == 0.0] = np.nan
+        concShow[concShow < 0.05] = np.nan
+            
+        # SST
+        levels = np.arange(-2.25, 15.25, step = 1.0)
+        #levels = np.array([-2.0 + 0.1 * j for j in range(40)] + [2.0 + 0.5 * j for j in range(20)])
+        #cs1 = ax.contourf(lon, lat, data,
+        #            transform=ccrs.PlateCarree(),cmap = plt.cm.RdYlBu_r, \
+        #                levels = levels, extend = "both")                   
+        ax.pcolormesh(lon, lat, tosShow, transform=ccrs.PlateCarree(), cmap = plt.cm.RdYlBu_r, \
+                         vmin = levels[0], vmax = levels[-1],)
+        #cbar1 = fig.colorbar(cs1)
     
-    plt.close(fig)
-    #stop()
-
+        # Ice
+    
+    
+        # Tweak: the colorbar is linearly going from white to blue but we want
+        # it to be non-linear. So we plot the sqrt of siconc instead of siconc
+        # itself. Thereby, low values (ex 0.04) are mapped to higher values
+        # which are more white.
+        #data = data ** (1 / 3)
+        sourceColors = [ [0.0, 0.0, 0.2], [0.95, 0.95, 0.95]]
+        myCM = LinearSegmentedColormap.from_list('myCM', sourceColors, N = 100)
+    
+        #levels = np.arange(0.0, 1, 0.01)
+        levels = np.arange(0.0, 1.05, 0.05)
+    
+        ax.pcolormesh(lon, lat, concShow, transform=ccrs.PlateCarree(), cmap = myCM, \
+                         vmin = levels[0], vmax = levels[-1],)
+        # Add Title
+        ax.set_title("1/12° reconstruction of the ocean and sea ice states\nwww.resist-project.github.io\n" + stringTime)
+        plt.savefig("./figs/" + stringTime + ".png")
+        
+      
+        
+        plt.close(fig)
+        #stop()
+    
