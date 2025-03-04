@@ -23,10 +23,11 @@ import matplotlib
 from   matplotlib.colors import LinearSegmentedColormap
 
 
+
 # Read data
 # Created with prep_eddies.bash
 
-for year in range(1997, 2004 + 1):
+for year in range(2005, 2014 + 1): # 1997--2004 works
     
     fileIn = "/scratch/project_465001240/massonne/TMP/RESIST_" + str(year) + ".nc"
     dimTime = "time_counter"
@@ -55,6 +56,7 @@ for year in range(1997, 2004 + 1):
             plt.axis('off')
             
             offsetMap = (t - np.datetime64("1960-01-01T12:00:00.000000000")).item() / 86400000000000
+            offsetMap = 0 * offsetMap 
  
             if region == "Arctic":
                 central_latitude = +73.0

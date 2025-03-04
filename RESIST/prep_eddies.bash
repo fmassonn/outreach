@@ -30,8 +30,8 @@ fi
 
 # Years defining the period to build files
 
-yearb=1998
-yeare=2004
+yearb=2005
+yeare=2014
 
 #rootdir=/scratch/project_465000898/barthele/models/nemo/experiments/nemo-4.2.2/eorca12_elic/outputs/
 rootdir=/scratch/project_465001240/barthele/models/nemo/experiments/nemo-4.2.2/eorca12_elic_2/outputs/
