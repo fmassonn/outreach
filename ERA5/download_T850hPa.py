@@ -11,7 +11,7 @@ c.retrieve(
             'temperature'
         ],
         'pressure_level': '850',
-        'year': '2021',
+        'year': '2012',
         'month': ['01', '02'],
         'day': [
             '01', '02', '03',
@@ -41,4 +41,4 @@ c.retrieve(
                     180.0,
                 ],
     },
-    'download_T850hPa.grib')
+    './data/download_T850hPa_2012.grib')

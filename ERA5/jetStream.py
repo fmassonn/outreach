@@ -11,7 +11,7 @@ from datetime import timedelta
 refDateNetcdf = datetime.datetime(1900, 1, 1)
 
 
-f = Dataset("download_UVPT.nc", mode = "r")
+f = Dataset("./data/download_UVP250hPa_2012.nc", mode = "r")
 u = f.variables["u"][:]
 v = f.variables["v"][:]
 lon=f.variables["longitude"][:]
@@ -19,7 +19,7 @@ lat=f.variables["latitude"][:]
 t  =f.variables["time"][:]
 f.close()
 
-f = Dataset("download_T850hPa.nc", mode = "r")
+f = Dataset("./data/download_T850hPa_2012.nc", mode = "r")
 T = f.variables["t"][:] - 273.15
 f.close()
 
@@ -76,7 +76,7 @@ for jt in np.arange(0, len(t), 1):
                      vmin = -10, vmax = 10,)
 
     cs1 = ax.pcolormesh(lon_tmp, lat, data, transform=ccrs.PlateCarree(), cmap = plt.cm.gist_gray_r, \
-                     vmin = levels[0], vmax = levels[-1])
+                     vmin = levels[0], vmax = levels[-1], alpha = 0.5)
 
     #LON_TMP, LAT = np.meshgrid(lon_tmp, lat)
 
@@ -91,9 +91,9 @@ for jt in np.arange(0, len(t), 1):
     #cs3 = ax.quiver(LON_TMP[::step, ::step], LAT[::step,::step], dX[::step,::step], dY[::step,::step], transform=ccrs.PlateCarree())
 
     # Add Title
-    ax.set_title("Wind Speed at 250hPa\n" + thisDate.strftime("%d %b %Y"))
+    ax.set_title("Atmospheric flow\n" + thisDate.strftime("%d %b %Y"))
     ax.coastlines(color = "black", resolution = "50m", lw = 1)
-    plt.savefig("./figs/fig" + str(jt).zfill(5) + ".png")
+    plt.savefig("./figs/fig_2012_" + str(jt).zfill(5) + ".png")
 
 
     plt.close(fig)
