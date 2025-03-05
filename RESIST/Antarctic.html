@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Slider by Date</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        img {
+            max-width: 30%;
+            height: auto;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>The ocean and sea ice simulated by the NEMO4-SI3 model at three spatial resolutions</h1>
+    <p id="date-display">2005-01-01</p>
+    <input type="range" id="date-slider" min="0" max="7304" value="0" style="width: 40%;">
+    <br>
+    <img id="image" src="./figs/stitch/Antarctic/stitch_2005-01-01.png" alt="Image not available">
+
+    <script>
+        const startDate = new Date("2005-01-01");
+        const endDate = new Date("2014-12-31");
+        const slider = document.getElementById("date-slider");
+        const dateDisplay = document.getElementById("date-display");
+        const image = document.getElementById("image");
+
+        // Calculate total days between start and end dates
+        const totalDays = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+        slider.max = totalDays;
+
+        slider.addEventListener("input", function() {
+            const selectedDate = new Date(startDate.getTime() + this.value * 24 * 60 * 60 * 1000);
+            const formattedDate = selectedDate.toISOString().split("T")[0];
+            dateDisplay.textContent = formattedDate;
+            image.src = `./figs/stitch/Antarctic/stitch_${formattedDate}.png`;
+        });
+
+
+    </script>
+    <p> Credit: RESIST project (www.resist-impuls.github.io), with work from A. Barthélemy, B. Richaud, D. Topal, F. Massonnet, T. Fichefet, H. Goosse </p>
+</body>
+</html>
