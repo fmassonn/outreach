@@ -8,6 +8,8 @@
 from netCDF4 import Dataset
 import numpy as np
 
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import matplotlib.path as mpath
 import matplotlib.ticker as mticker
@@ -27,9 +29,24 @@ from   matplotlib.colors import LinearSegmentedColormap
 # Read data
 # Created with prep_eddies.bash
 
-for year in range(2005, 2014 + 1): # 1997--2004 works
+expname = "eorca025_elic_4"
+machine = "lumi"
+config  = expname + "_" + machine
+if expname == "eorca1_elic_6":
+   strReso = "1°"
+elif expname == "eorca025_elic_4":
+   strReso = "1/4°"
+elif expname == "eorca12_elic":
+   strReso = "1/12°"
+
+rotatingEarth= True
+
+yearb, yeare = 2015, 2024
+
+for year in range(yearb, yeare + 1): # 1997--2004 works
     
     fileIn = "/scratch/project_465001240/massonne/TMP/RESIST_" + str(year) + ".nc"
+    fileIn = "/cofast/fmasson/TMP/" + config + "/" + config + "_RESIST_" + str(year) + ".nc"
     dimTime = "time_counter"
     
     varConcStr = "siconc"
@@ -56,7 +73,9 @@ for year in range(2005, 2014 + 1): # 1997--2004 works
             plt.axis('off')
             
             offsetMap = (t - np.datetime64("1960-01-01T12:00:00.000000000")).item() / 86400000000000
-            offsetMap = 0 * offsetMap 
+
+            if not rotatingEarth:
+                offsetMap = 0 * offsetMap 
  
             if region == "Arctic":
                 central_latitude = +73.0
@@ -106,8 +125,17 @@ for year in range(2005, 2014 + 1): # 1997--2004 works
             ax.pcolormesh(lon, lat, concShow, transform=ccrs.PlateCarree(), cmap = myCM, \
                              vmin = levels[0], vmax = levels[-1],)
             # Add Title
-            ax.set_title("1/12° reconstruction of the ocean and sea ice states\nwww.resist-project.github.io\n" + stringTime)
-            plt.savefig("./figs/" + region + "/" + stringTime + ".png")
+            ax.set_title(strReso + " reconstruction of the ocean and sea ice states\nwww.resist-project.github.io\n" + stringTime)
+
+            if rotatingEarth:
+                folder = "./figs/" + config + "/" + region + "/rotating/" 
+            else:
+                folder = "./figs/" + config + "/" + region + "/fixed/" 
+
+            Path(folder).mkdir(parents=True, exist_ok=True)
+
+            print("Saving " + folder + "/" + stringTime + ".png")
+            plt.savefig(folder + "/" + stringTime + ".png")
             
           
             
