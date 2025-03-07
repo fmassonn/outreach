@@ -10,6 +10,15 @@
             text-align: center;
             margin: 20px;
         }
+        .controls {
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
         img {
             max-width: 45%;
             height: auto;
@@ -21,7 +30,14 @@
 <body>
     <h1>The ocean and sea ice simulated by the NEMO4-SI3 model at three spatial resolutions</h1>
     <p id="date-display">1997-01-01</p>
+    <!-- Cursor / slide bar -->
     <input type="range" id="date-slider" min="0" max="7304" value="0" style="width: 40%;">
+    <!-- Navigation buttons -->
+    <div class="controls">
+        <button id="prev-btn">⏪ Previous </button>
+        <button id="play-pause-btn">▶ Play</button>
+        <button id="next-btn">⏩ Next</button>
+    </div>
     <br>
     <img id="image" src="./figs/stitch/Antarctic/stitch_1997-01-01.png" alt="Image not available">
 
@@ -32,18 +48,52 @@
         const dateDisplay = document.getElementById("date-display");
         const image = document.getElementById("image");
 
+        const prevBtn = document.getElementById("prev-btn");
+        const nextBtn = document.getElementById("next-btn");
+        const playPauseBtn = document.getElementById("play-pause-btn");
+     
+        let autoPlay = null; // 
         // Calculate total days between start and end dates
         const totalDays = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
-        slider.max = totalDays;
+        // slider.min = 0;
+        slider.max = totalDays - 1;
 
-        slider.addEventListener("input", function() {
-            const selectedDate = new Date(startDate.getTime() + this.value * 24 * 60 * 60 * 1000);
+        function updateImage() {
+            const selectedDate = new Date(startDate.getTime() + slider.value * 24 * 60 * 60 * 1000);
             const formattedDate = selectedDate.toISOString().split("T")[0];
             dateDisplay.textContent = formattedDate;
             image.src = `./figs/stitch/Antarctic/stitch_${formattedDate}.png`;
-        });
+        }
 
+        // Update image when curser moves
+        slider.addEventListener("input", updateImage)
+        
+        // Function  to move forward or backwards
+        function changeImage(step) {
+            let newValue = parseInt(slider.value) + step;
+            if (newValue < 0) newValue = 0;
+            if (newValue > totalDays - 1) newValue = totalDays - 1;
+            slider.value = newValue;
+            updateImage();
+        }
 
+        // Button management
+        prevBtn.addEventListener("click", () => changeImage(-1));
+        nextBtn.addEventListener("click", () => changeImage(1));
+
+        // Automatic lecture
+        function togglePlayPause() {
+            if (autoPlay) {
+                clearInterval(autoPlay);
+                autoPlay = null;
+                playPauseBtn.textContent = "▶ Play";
+            } else {
+                autoPlay = setInterval(() => changeImage(1), 40); // Défiler toutes les 10 ms
+                playPauseBtn.textContent = "⏸  Pause";
+            }
+        }
+
+        playPauseBtn.addEventListener("click", togglePlayPause);
     </script>
    <!-- <p> Credit: RESIST project (www.resist-impuls.github.io), with work from A. Barthélemy, B. Richaud, D. Topal, F. Massonnet, T. Fichefet, H. Goosse </p> -->
 </body>
