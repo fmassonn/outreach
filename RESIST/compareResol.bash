@@ -2,12 +2,12 @@
 set -o nounset
 set -o errexit
 
-region="Antarctic"
+region="Arctic"
 
 mkdir -p ./figs/stitch/${region}
 
-start_date="1997-01-01"
-end_date="2014-12-31"
+start_date="2002-01-01"
+end_date="2011-12-31"
 
 current_date="$start_date"
 
